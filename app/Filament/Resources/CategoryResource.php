@@ -7,6 +7,7 @@ use App\Filament\Resources\CategoryResource\RelationManagers;
 use App\Models\Category;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -26,7 +27,11 @@ class CategoryResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->unique(ignoreRecord: true)
-                    ->autofocus(),
+                    ->lazy()
+                    ->autofocus()
+                    ->afterStateUpdated(function (Set $set, ?string $state) {
+                        $set('slug', str()->slug($state));
+                    }),
                 Forms\Components\TextInput::make('slug')
                     ->required(),
                 Forms\Components\Toggle::make('is_active')
