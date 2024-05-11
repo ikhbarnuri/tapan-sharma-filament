@@ -46,13 +46,28 @@ class TicketResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('title')
+                    ->description(fn(Ticket $record): string => $record->description)
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->badge(),
+                Tables\Columns\TextColumn::make('priority')
+                    ->badge(),
+                Tables\Columns\TextColumn::make('assignedBy.name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('assignedTo.name')
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextInputColumn::make('comment'),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
