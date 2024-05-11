@@ -10,8 +10,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TicketResource extends Resource
 {
@@ -50,7 +48,7 @@ class TicketResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->description(fn(Ticket $record): string => $record->description)
+                    ->description(fn (Ticket $record): string => $record->description)
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
