@@ -29,13 +29,16 @@ class TicketResource extends Resource
                 Forms\Components\Textarea::make('description')
                     ->rows(3),
                 Forms\Components\Select::make('status')
-                    ->options(Ticket::STATUS)
-                    ->required(),
+                    ->options(self::$model::STATUS)
+                    ->required()
+                    ->in(self::$model::STATUS),
                 Forms\Components\Select::make('priority')
-                    ->options(Ticket::PRIORITY)
-                    ->required(),
+                    ->options(self::$model::PRIORITY)
+                    ->required()
+                    ->in(self::$model::PRIORITY),
                 Forms\Components\Select::make('assigned_to')
-                    ->relationship('assignedTo', 'name'),
+                    ->relationship('assignedTo', 'name')
+                    ->required(),
                 Forms\Components\Textarea::make('comment')
                     ->rows(3),
             ])

@@ -30,6 +30,8 @@ class CategoriesRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('slug'),
+                Tables\Columns\ToggleColumn::make('is_active'),
             ])
             ->filters([
                 //
