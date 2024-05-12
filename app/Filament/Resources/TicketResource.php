@@ -4,12 +4,15 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TicketResource\Pages;
 use App\Filament\Resources\TicketResource\RelationManagers;
+use App\Models\Role;
 use App\Models\Ticket;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class TicketResource extends Resource
 {
@@ -35,7 +38,14 @@ class TicketResource extends Resource
                     ->required()
                     ->in(self::$model::PRIORITY),
                 Forms\Components\Select::make('assigned_to')
-                    ->relationship('assignedTo', 'name')
+                    ->options(
+                        User::query()
+                            ->whereHas('roles', function (Builder $query) {
+                                $query->where('name', Role::ROLES['Agent']);
+                            })
+                            ->pluck('name', 'id')
+                            ->toArray()
+                    )
                     ->required(),
                 Forms\Components\Textarea::make('comment')
                     ->rows(3),
@@ -48,7 +58,7 @@ class TicketResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->description(fn (Ticket $record): string => $record->description)
+                    ->description(fn(Ticket $record): string => $record->description)
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
@@ -64,7 +74,12 @@ class TicketResource extends Resource
                 Tables\Columns\TextInputColumn::make('comment'),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                    ->options(self::$model::STATUS)
+                    ->placeholder('Filter By Status'),
+                Tables\Filters\SelectFilter::make('priority')
+                    ->options(self::$model::PRIORITY)
+                    ->placeholder('Filter By Priority'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
