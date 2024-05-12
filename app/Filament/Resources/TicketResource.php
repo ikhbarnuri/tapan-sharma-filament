@@ -56,6 +56,7 @@ class TicketResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->description(fn(Ticket $record): string => $record->description)
@@ -72,6 +73,9 @@ class TicketResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextInputColumn::make('comment'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable(),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
