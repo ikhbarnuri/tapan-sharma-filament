@@ -56,10 +56,15 @@ class TicketResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn(Builder $query) => auth()
+                ->user()
+                ->hasRole(Role::ROLES['Admin'])
+                ? $query
+                : $query->where('assigned_to', auth()->id()))
             ->defaultSort('created_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->description(fn(Ticket $record): string => $record->description)
+                    ->description(fn(Ticket $record): ?string => $record?->description ?? null)
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
