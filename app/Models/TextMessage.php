@@ -15,6 +15,9 @@ class TextMessage extends Model
         'sent_to',
         'sent_by',
         'status',
+        'remarks',
+        'created_at',
+        'updated_at',
     ];
 
     const STATUS = [

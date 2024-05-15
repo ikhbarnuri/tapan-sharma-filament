@@ -5,11 +5,14 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
+use App\Services\TextMessageService;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
 
 class UserResource extends Resource
 {
@@ -58,6 +61,24 @@ class UserResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\BulkAction::make('sendBulkSms')
+                        ->modalButton('Send Message')
+                        ->icon('heroicon-o-chat-bubble-left-ellipsis')
+                        ->deselectRecordsAfterCompletion()
+                        ->form([
+                            Forms\Components\Textarea::make('message')
+                                ->placeholder('Enter your message here')
+                                ->required()
+                                ->rows(4),
+                            Forms\Components\Textarea::make('remarks'),
+                        ])
+                        ->action(function (array $data, Collection $collection) {
+                            TextMessageService::sendMessage($data, $collection);
+
+                            Notification::make()
+                                ->title('Messages sent successfully')
+                                ->send();
+                        }),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
