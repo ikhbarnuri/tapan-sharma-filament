@@ -49,6 +49,7 @@ class TicketResource extends Resource
                     ->required(),
                 Forms\Components\Textarea::make('comment')
                     ->rows(3),
+                Forms\Components\FileUpload::make('attachment'),
             ])
             ->columns(1);
     }
